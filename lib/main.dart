@@ -15,7 +15,7 @@ class CloudSkillsApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue, 
         useMaterial3: true,
-        brightness: Brightness.dark, // Dark mode for less eye strain during commutes
+        brightness: Brightness.dark,
       ),
       home: const VideoDashboard(),
       debugShowCheckedModeBanner: false,
@@ -40,6 +40,8 @@ class _VideoDashboardState extends State<VideoDashboard> {
     
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      // This line tricks Google into allowing the OAuth login flow
+      ..setUserAgent('Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36')
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (String url) {
