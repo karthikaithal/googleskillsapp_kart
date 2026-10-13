@@ -4,14 +4,28 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cloud_skills_mobile
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          
+      # 1. Delete the broken android folder
+      - run: rm -rf android
+      
+      # 2. Force Flutter to generate a pristine, modern v2 Android project
+      - run: flutter create --platforms android .
+      
+      # 3. Automatically inject the required Internet permission for the WebView
+      - run: sed -i '/<application/i \    <uses-permission android:name="android.permission.INTERNET"/>' android/app/src/main/AndroidManifest.xml
+      
       - run: flutter pub get
       - run: flutter build apk --release
+      
       - uses: actions/upload-artifact@v4
         with:
           name: pixel7-cloud-skills-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: cloud_skills_mobile/build/app/outputs/flutter-apk/app-release.apk
